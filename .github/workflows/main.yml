@@ -1,20 +1,31 @@
 name: Run Binary in Parallel
 
 on:
-  workflow_dispatch:   # Manual trigger
+  workflow_dispatch:
 
 jobs:
   run-binary:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        session: [1,2,3,4,5,6,7,8,9,10]   # 10 parallel runs
+        session: [1,2,3,4,5,6,7,8,9,10]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: List files for debugging
+        run: ls -lah
+
+      - name: Verify binary exists
+        run: |
+          if [ ! -f "./lol" ]; then
+            echo "❌ Binary not found!"
+            exit 1
+          fi
 
       - name: Give execution permission
         run: chmod +x ./lol
 
       - name: Run binary
         run: ./lol 127.0.0.1 8080 60
+        
